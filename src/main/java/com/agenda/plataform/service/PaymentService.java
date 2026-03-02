@@ -51,6 +51,13 @@ public class PaymentService {
         return paymentRepository.findAll(pageable);
     }
     
+    @Transactional(readOnly = true)
+    public Page<PaymentEntity> findByAppointment(UUID appointmentId, Pageable pageable) {
+        return paymentRepository.findAll((root, query, cb) -> 
+            cb.equal(root.get("appointment").get("id"), appointmentId), pageable
+        );
+    }
+    
     @Transactional
     public PaymentEntity updateStatus(UUID id, PaymentStatus newStatus) {
         PaymentEntity payment = findById(id);

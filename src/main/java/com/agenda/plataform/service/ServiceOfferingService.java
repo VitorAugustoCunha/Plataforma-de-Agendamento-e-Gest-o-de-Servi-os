@@ -62,6 +62,11 @@ public class ServiceOfferingService {
         return serviceOfferingRepository.findAll(pageable);
     }
     
+    @Transactional(readOnly = true)
+    public Page<ServiceOfferingEntity> findAll(Specification<ServiceOfferingEntity> spec, Pageable pageable) {
+        return serviceOfferingRepository.findAll(spec, pageable);
+    }
+    
     @Transactional
     public ServiceOfferingEntity update(UUID id, ServiceOfferingEntity serviceUpdate) {
         ServiceOfferingEntity service = findById(id);

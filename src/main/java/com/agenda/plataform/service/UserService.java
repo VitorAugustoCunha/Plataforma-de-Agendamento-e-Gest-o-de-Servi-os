@@ -51,6 +51,11 @@ public class UserService {
     }
     
     @Transactional(readOnly = true)
+    public Page<UserEntity> findAll(Specification<UserEntity> spec, Pageable pageable) {
+        return userRepository.findAll(spec, pageable);
+    }
+    
+    @Transactional(readOnly = true)
     public Page<UserEntity> findByRole(UserRole role, Pageable pageable) {
         Specification<UserEntity> spec = UserSpecifications.byRole(role);
         return userRepository.findAll(spec, pageable);

@@ -98,6 +98,11 @@ public class AppointmentService {
         return appointmentRepository.findAll(pageable);
     }
     
+    @Transactional(readOnly = true)
+    public Page<AppointmentEntity> findAll(Specification<AppointmentEntity> spec, Pageable pageable) {
+        return appointmentRepository.findAll(spec, pageable);
+    }
+    
     @Transactional
     public AppointmentEntity cancel(UUID id, String cancelReason) {
         AppointmentEntity appointment = findById(id);

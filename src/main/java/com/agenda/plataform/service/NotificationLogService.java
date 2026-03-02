@@ -52,6 +52,16 @@ public class NotificationLogService {
         return notificationLogRepository.findAll(pageable);
     }
     
+    @Transactional(readOnly = true)
+    public Page<NotificationLogEntity> findByUserAndStatus(UUID userId, NotificationStatus status, Pageable pageable) {
+        return notificationLogRepository.findAll((root, query, cb) -> 
+            cb.and(
+                cb.equal(root.get("user").get("id"), userId),
+                cb.equal(root.get("status"), status)
+            ), pageable
+        );
+    }
+    
     @Transactional
     public NotificationLogEntity markAsSent(UUID id) {
         NotificationLogEntity notification = findById(id);
