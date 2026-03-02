@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.agenda.plataform.dto.auth.AuthRequest;
 import com.agenda.plataform.dto.auth.AuthResponse;
+import com.agenda.plataform.dto.user.UserCreateRequest;
+import com.agenda.plataform.dto.user.UserResponse;
 import com.agenda.plataform.entity.UserEntity;
+import com.agenda.plataform.mapper.UserMapper;
 import com.agenda.plataform.security.JwtProvider;
 import com.agenda.plataform.security.TokenBlacklistService;
 import com.agenda.plataform.service.UserService;
@@ -30,6 +33,14 @@ public class AuthController {
     private final JwtProvider jwtProvider;
     private final UserService userService;
     private final TokenBlacklistService tokenBlacklistService;
+    private final UserMapper userMapper;
+    
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserCreateRequest request) {
+        UserEntity user = userMapper.toEntity(request);
+        UserEntity created = userService.create(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toResponse(created));
+    }
     
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
