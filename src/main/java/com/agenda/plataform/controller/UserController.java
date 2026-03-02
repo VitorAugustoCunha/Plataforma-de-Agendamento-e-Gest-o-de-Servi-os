@@ -80,7 +80,6 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        // Soft delete: desativa o usuário
         UserEntity user = userService.findById(id);
         user.setActive(false);
         userService.update(id, user);

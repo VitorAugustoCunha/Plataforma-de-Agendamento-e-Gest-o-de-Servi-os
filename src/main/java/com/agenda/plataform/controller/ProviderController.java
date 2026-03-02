@@ -47,10 +47,9 @@ public class ProviderController {
     private final AvailabilityMapper availabilityMapper;
     private final TimeOffMapper timeOffMapper;
 
-    // Provider Profile endpoints
     @PostMapping
     public ResponseEntity<ProviderProfileResponse> create(@Valid @RequestBody ProviderProfileRequest request) {
-        ProviderProfileEntity profile = providerMapper.toEntity(request, null); // user será setado no service
+        ProviderProfileEntity profile = providerMapper.toEntity(request, null);
         ProviderProfileEntity created = providerService.create(request.getUserId(), profile);
         return ResponseEntity.status(HttpStatus.CREATED).body(providerMapper.toResponse(created));
     }
@@ -86,12 +85,10 @@ public class ProviderController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        // Implementar lógica de deleção se necessário
-        // Por enquanto, retorna 501 Not Implemented
-        return ResponseEntity.status(501).build();
+        providerService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // Availability endpoints
     @PostMapping("/{providerId}/availability")
     public ResponseEntity<AvailabilityResponse> createAvailability(
             @PathVariable UUID providerId,
@@ -127,11 +124,10 @@ public class ProviderController {
     public ResponseEntity<Void> deleteAvailability(
             @PathVariable UUID providerId,
             @PathVariable UUID availabilityId) {
-        // Implementar lógica de deleção se necessário
-        return ResponseEntity.status(501).build();
+        availabilityService.delete(availabilityId);
+        return ResponseEntity.noContent().build();
     }
 
-    // TimeOff endpoints
     @PostMapping("/{providerId}/timeoff")
     public ResponseEntity<TimeOffResponse> createTimeOff(
             @PathVariable UUID providerId,
@@ -167,7 +163,7 @@ public class ProviderController {
     public ResponseEntity<Void> deleteTimeOff(
             @PathVariable UUID providerId,
             @PathVariable UUID timeOffId) {
-        // Implementar lógica de deleção se necessário
-        return ResponseEntity.status(501).build();
+        timeOffService.delete(timeOffId);
+        return ResponseEntity.noContent().build();
     }
 }

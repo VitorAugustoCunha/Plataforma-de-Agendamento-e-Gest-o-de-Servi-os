@@ -117,12 +117,4 @@ public class AppointmentController {
         AppointmentEntity completed = appointmentService.complete(id);
         return ResponseEntity.ok(appointmentMapper.toResponse(completed));
     }
-
-    @PatchMapping("/{id}/confirm")
-    public ResponseEntity<AppointmentResponse> confirm(@PathVariable UUID id) {
-        // SCHEDULED é o status padrão - não há CONFIRMED no enum
-        // Se precisar de CONFIRMED, adicione ao enum AppointmentStatus
-        AppointmentEntity appointment = appointmentService.findById(id);
-        return ResponseEntity.ok(appointmentMapper.toResponse(appointment));
-    }
 }

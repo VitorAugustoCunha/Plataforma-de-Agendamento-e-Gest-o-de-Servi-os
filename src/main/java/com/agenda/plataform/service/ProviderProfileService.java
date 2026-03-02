@@ -82,4 +82,10 @@ public class ProviderProfileService {
         profile.setUpdatedAt(OffsetDateTime.now());
         return providerProfileRepository.save(profile);
     }
+    
+    @Transactional
+    public void delete(UUID id) {
+        ProviderProfileEntity profile = findById(id);
+        providerProfileRepository.delete(profile);
+    }
 }

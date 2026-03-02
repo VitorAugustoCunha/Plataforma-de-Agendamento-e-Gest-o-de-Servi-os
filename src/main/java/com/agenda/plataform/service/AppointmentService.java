@@ -16,6 +16,7 @@ import com.agenda.plataform.enums.AppointmentStatus;
 import com.agenda.plataform.exception.AppointmentConflictException;
 import com.agenda.plataform.exception.InvalidBusinessRuleException;
 import com.agenda.plataform.exception.ResourceNotFoundException;
+import com.agenda.plataform.event.EventPublisher;
 import com.agenda.plataform.repository.AppointmentRepository;
 import com.agenda.plataform.repository.ProviderTimeOffRepository;
 import com.agenda.plataform.util.specification.AppointmentSpecifications;
@@ -28,12 +29,12 @@ public class AppointmentService {
     
     private final AppointmentRepository appointmentRepository;
     private final ProviderTimeOffRepository providerTimeOffRepository;
+    private final EventPublisher eventPublisher;
     private final UserService userService;
     private final ServiceOfferingService serviceOfferingService;
     
     @Transactional
     public AppointmentEntity create(UUID clientId, UUID serviceId, AppointmentEntity appointmentData) {
-        // Validações básicas
         UserEntity client = userService.findById(clientId);
         ServiceOfferingEntity service = serviceOfferingService.findById(serviceId);
         
@@ -41,15 +42,12 @@ public class AppointmentService {
             throw new InvalidBusinessRuleException("Serviço não está ativo");
         }
         
-        // Validar que startAt < endAt
         if (!appointmentData.getStartAt().isBefore(appointmentData.getEndAt())) {
             throw new InvalidBusinessRuleException("startAt deve ser antes de endAt");
         }
         
-        // Provider é determinado pelo serviço
         UserEntity provider = service.getProvider().getUser();
         
-        // Validar antecedência mínima
         Integer minAdvance = service.getProvider().getMinAdvanceMinutes();
         if (minAdvance != null) {
             OffsetDateTime minDateTime = OffsetDateTime.now().plusMinutes(minAdvance);
@@ -60,10 +58,7 @@ public class AppointmentService {
             }
         }
         
-        // Verificar conflitos
         checkConflict(provider.getId(), appointmentData.getStartAt(), appointmentData.getEndAt());
-        
-        // Verificar se está em timeOff
         checkTimeOff(provider.getId(), appointmentData.getStartAt(), appointmentData.getEndAt());
         
         appointmentData.setClient(client);
@@ -115,7 +110,6 @@ public class AppointmentService {
             throw new InvalidBusinessRuleException("Não pode cancelar agendamento concluído");
         }
         
-        // Validar janela de cancelamento
         Integer cancelWindow = appointment.getService().getProvider().getCancelWindowMinutes();
         if (cancelWindow != null) {
             OffsetDateTime minDateTime = appointment.getStartAt().minusMinutes(cancelWindow);

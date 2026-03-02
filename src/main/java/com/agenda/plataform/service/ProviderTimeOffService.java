@@ -68,7 +68,7 @@ public class ProviderTimeOffService {
     }
     
     @Transactional
-    public void deleteById(UUID id) {
+    public void delete(UUID id) {
         ProviderTimeOffEntity timeOff = findById(id);
         providerTimeOffRepository.delete(timeOff);
     }

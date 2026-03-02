@@ -68,7 +68,7 @@ public class ProviderAvailabilityService {
     }
     
     @Transactional
-    public void deleteById(UUID id) {
+    public void delete(UUID id) {
         ProviderAvailabilityEntity availability = findById(id);
         providerAvailabilityRepository.delete(availability);
     }

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.agenda.plataform.entity.AppointmentEntity;
 import com.agenda.plataform.entity.PaymentEntity;
 import com.agenda.plataform.enums.PaymentStatus;
+import com.agenda.plataform.event.EventPublisher;
 import com.agenda.plataform.exception.InvalidBusinessRuleException;
 import com.agenda.plataform.exception.ResourceNotFoundException;
 import com.agenda.plataform.repository.PaymentRepository;
@@ -23,6 +24,7 @@ public class PaymentService {
     
     private final PaymentRepository paymentRepository;
     private final AppointmentService appointmentService;
+    private final EventPublisher eventPublisher;
     
     @Transactional
     public PaymentEntity create(UUID appointmentId, PaymentEntity paymentData) {

@@ -90,7 +90,6 @@ public class ServiceOfferingController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        // Soft delete: desativa o serviço
         ServiceOfferingEntity service = serviceOfferingService.findById(id);
         service.setActive(false);
         serviceOfferingService.update(id, service);

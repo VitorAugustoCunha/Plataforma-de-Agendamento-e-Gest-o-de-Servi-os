@@ -6,11 +6,14 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.agenda.plataform.entity.UserEntity;
 import com.agenda.plataform.enums.UserRole;
+import com.agenda.plataform.event.EventPublisher;
+import com.agenda.plataform.event.UserCreatedEvent;
 import com.agenda.plataform.exception.ResourceNotFoundException;
 import com.agenda.plataform.repository.UserRepository;
 import com.agenda.plataform.util.specification.UserSpecifications;
@@ -22,15 +25,28 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EventPublisher eventPublisher;
     
     @Transactional
     public UserEntity create(UserEntity user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email já existe");
         }
+        
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         user.setCreatedAt(OffsetDateTime.now());
         user.setUpdatedAt(OffsetDateTime.now());
-        return userRepository.save(user);
+        UserEntity created = userRepository.save(user);
+        
+        eventPublisher.publishUserCreated(UserCreatedEvent.builder()
+                .userId(created.getId())
+                .email(created.getEmail())
+                .name(created.getName())
+                .createdAt(created.getCreatedAt())
+                .build());
+        
+        return created;
     }
     
     @Transactional(readOnly = true)

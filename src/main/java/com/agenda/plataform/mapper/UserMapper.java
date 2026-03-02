@@ -17,7 +17,7 @@ public class UserMapper {
         return UserEntity.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .passwordHash(request.getPassword()) // Será hasheado no service
+                .passwordHash(request.getPassword())
                 .role(request.getRole())
                 .active(true)
                 .build();
@@ -31,7 +31,7 @@ public class UserMapper {
             entity.setEmail(request.getEmail());
         }
         if (request.getPassword() != null) {
-            entity.setPasswordHash(request.getPassword()); // Será hasheado no service
+            entity.setPasswordHash(request.getPassword());
         }
         if (request.getActive() != null) {
             entity.setActive(request.getActive());
