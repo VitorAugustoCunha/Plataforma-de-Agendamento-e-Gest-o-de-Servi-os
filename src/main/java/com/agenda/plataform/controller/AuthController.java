@@ -21,12 +21,15 @@ import com.agenda.plataform.security.JwtProvider;
 import com.agenda.plataform.security.TokenBlacklistService;
 import com.agenda.plataform.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Autenticação", description = "Endpoints de registro, login e autenticação")
 public class AuthController {
     
     private final AuthenticationManager authenticationManager;
@@ -35,6 +38,7 @@ public class AuthController {
     private final TokenBlacklistService tokenBlacklistService;
     private final UserMapper userMapper;
     
+    @Operation(summary = "Registrar novo usuário", description = "Cria uma nova conta de usuário (Cliente, Provedor ou Admin)")
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody UserCreateRequest request) {
         UserEntity user = userMapper.toEntity(request);
@@ -42,11 +46,13 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toResponse(created));
     }
     
+    @Operation(summary = "Fazer login", description = "Autentica um usuário e retorna um token JWT")
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
+              
                     request.getEmail(),
                     request.getPassword()
                 )

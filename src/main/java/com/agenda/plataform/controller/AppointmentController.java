@@ -29,12 +29,15 @@ import com.agenda.plataform.service.ServiceOfferingService;
 import com.agenda.plataform.service.UserService;
 import com.agenda.plataform.util.specification.AppointmentSpecifications;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/appointments")
 @RequiredArgsConstructor
+@Tag(name = "Agendamentos", description = "Gerenciamento de agendamentos de serviços")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
@@ -42,6 +45,7 @@ public class AppointmentController {
     private final UserService userService;
     private final AppointmentMapper appointmentMapper;
 
+    @Operation(summary = "Criar agendamento", description = "Cria um novo agendamento de serviço")
     @PostMapping
     public ResponseEntity<AppointmentResponse> create(
             @Valid @RequestBody AppointmentCreateRequest request,

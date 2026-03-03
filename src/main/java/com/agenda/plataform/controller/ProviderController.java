@@ -32,12 +32,15 @@ import com.agenda.plataform.service.ProviderAvailabilityService;
 import com.agenda.plataform.service.ProviderProfileService;
 import com.agenda.plataform.service.ProviderTimeOffService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/providers")
 @RequiredArgsConstructor
+@Tag(name = "Provedores", description = "Gerenciamento de perfis de provedores, disponibilidades e folgas")
 public class ProviderController {
 
     private final ProviderProfileService providerService;
@@ -47,6 +50,7 @@ public class ProviderController {
     private final AvailabilityMapper availabilityMapper;
     private final TimeOffMapper timeOffMapper;
 
+    @Operation(summary = "Criar perfil de provedor", description = "Cria um novo perfil de provedor de serviços")
     @PostMapping
     public ResponseEntity<ProviderProfileResponse> create(@Valid @RequestBody ProviderProfileRequest request) {
         ProviderProfileEntity profile = providerMapper.toEntity(request, null);
@@ -54,6 +58,7 @@ public class ProviderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(providerMapper.toResponse(created));
     }
 
+    @Operation(summary = "Obter provedor por ID", description = "Retorna os detalhes de um provedor específico")
     @GetMapping("/{id}")
     public ResponseEntity<ProviderProfileResponse> getById(@PathVariable UUID id) {
         ProviderProfileEntity profile = providerService.findById(id);

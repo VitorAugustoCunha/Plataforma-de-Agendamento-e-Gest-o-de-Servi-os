@@ -26,12 +26,15 @@ import com.agenda.plataform.service.ProviderProfileService;
 import com.agenda.plataform.service.ServiceOfferingService;
 import com.agenda.plataform.util.specification.ServiceOfferingSpecifications;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/services")
 @RequiredArgsConstructor
+@Tag(name = "Serviços", description = "Gerenciamento de serviços oferecidos pelos provedores")
 public class ServiceOfferingController {
 
     private final ServiceOfferingService serviceOfferingService;
